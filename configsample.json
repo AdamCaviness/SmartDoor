@@ -1,4 +1,4 @@
 {
 	"auth_key": "YOUR_KEY",
-	"device_name": "Chrome"
+	"device_names": ["Chrome", "iPhone"]
 }

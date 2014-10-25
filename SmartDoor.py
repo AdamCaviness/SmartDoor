@@ -28,11 +28,18 @@ pb = PushBullet(config["auth_key"])
 
 with open(filePath, "rb") as pic:
     message = "SmartDoor " + re.sub(".png", "", fileName)
-    success, file_data = pb.upload_file(pic, message, "image/jpeg")
+    success, file_data = pb.upload_file(pic, message, "image/jpeg",)
 
 print("Success uploading picture " + file_data.get("file_name") + " at url " + file_data.get("file_url") + " " + str(success))
-success, push = pb.push_file(**file_data)
-print(push.get("iden") + " succeeded")
+devices = pb.devices
+
+for deviceName in config["device_names"]:
+    deviceList = [d for d in devices if d.nickname == deviceName and d.active]
+    device = deviceList[0] if deviceList else None
+    if device is not None:
+        success, push = device.push_file(**file_data)
+        print(push.get("iden") + " succeeded")
+
 os.remove(filePath)
 
 
