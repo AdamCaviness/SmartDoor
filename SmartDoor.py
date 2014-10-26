@@ -32,12 +32,16 @@ def take_photo_and_push(pushbullet_auth_key, pushbullet_device_names):
     print(upload_message)
     devices = pb.devices
 
-    for deviceName in pushbullet_device_names:
-        device_list = [d for d in devices if d.nickname == deviceName and d.active]
-        device = device_list[0] if device_list else None
-        if device is not None:
-            success, push = device.push_file(**file_data)
-            print('Successfully pushed ' + push.get('iden') + ' to ' + device.nickname)
+    if any([item in pushbullet_device_names for item in pushbullet_device_names]):
+        for deviceName in pushbullet_device_names:
+            device_list = [d for d in devices if d.nickname == deviceName and d.active]
+            device = device_list[0] if device_list else None
+            if device is not None:
+                success, push = device.push_file(**file_data)
+                print('Successfully pushed ' + push.get('iden') + ' to ' + device.nickname)
+    else:
+        success, push = pb.push_file(**file_data)
+        print('Successfully pushed ' + push.get('iden') + ' to all devices')
 
     os.remove(file_path)
 

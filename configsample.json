@@ -1,6 +1,6 @@
 {
 	"pushbullet_auth_key": "YOUR_KEY",
 	"pushbullet_device_names": ["Chrome", "iPhone"],
-    "gpio_pin_sensor": "7",
-    "gpio_pin_led": "16"
+    "gpio_pin_sensor": "4",
+    "gpio_pin_led": "23"
 }

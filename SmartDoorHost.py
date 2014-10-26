@@ -13,7 +13,7 @@ def read_sensor():
     config = read_config()
     led_pin = int(config['gpio_pin_led'])
     sensor_pin = int(config['gpio_pin_sensor'])
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setup(led_pin, GPIO.OUT)    # LED
     GPIO.setup(sensor_pin, GPIO.IN)  # Sensor
 
