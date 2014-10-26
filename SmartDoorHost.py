@@ -9,11 +9,8 @@ def read_sensor():
     """ Reads the specified GPIO pins via the config
         file and processes them via the SmartDoor script.
     """
-    executing_path = os.path.dirname(sys.argv[0])
-    config_filename = os.path.join(executing_path, 'config.json')
-    with open(config_filename) as conf:
-        config = json.load(conf)
 
+    config = read_config()
     led_pin = int(config['gpio_pin_led'])
     sensor_pin = int(config['gpio_pin_sensor'])
     GPIO.setmode(GPIO.BOARD)
@@ -33,6 +30,14 @@ def read_sensor():
         print('SmartDoor exited gracefully')
     finally:
         GPIO.cleanup()
+
+
+def read_config():
+    executing_path = os.path.dirname(sys.argv[0])
+    config_filename = os.path.join(executing_path, 'config.json')
+    with open(config_filename) as conf:
+        config = json.load(conf)
+    return config
 
 if __name__ == '__main__':
     # Being executed as a script
