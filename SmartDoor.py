@@ -6,40 +6,48 @@ import picamera
 import datetime
 from pushbullet import PushBullet
 
-# Implements pushbullet.py, see https://pypi.python.org/pypi/pushbullet.py
-# Implements picamera.py, see http://raspberrypi.org/picamera-pure-python-interface-for-camera-module
 
-executingPath = os.path.dirname(sys.argv[0])
-configFileName = os.path.join(executingPath, "config.json")
-    
-with open(configFileName) as conf:
-    config = json.load(conf)
+def take_photo_and_push():
+    """ Takes a photo and sends to the cloud.
+        Implements pushbullet.py, see https://pypi.python.org/pypi/pushbullet.py
+        Implements picamera.py, see http://raspberrypi.org/picamera-pure-python-interface-for-camera-module
+    """
+    executing_path = os.path.dirname(sys.argv[0])
+    config_filename = os.path.join(executing_path, 'config.json')
+        
+    with open(config_filename) as conf:
+        config = json.load(conf)
 
-fileName = datetime.datetime.now().strftime("%I:%M%p %m-%d-%Y") + ".jpg"
-filePath = os.path.join("/home/pi", fileName)
-with picamera.PiCamera() as camera:
-    camera.start_preview()
-    camera.vflip = True
-    camera.hflip = True
-    camera.resolution = (1024, 768)
-    camera.capture(filePath)
+    file_name = datetime.datetime.now().strftime("%I:%M%p %m-%d-%Y") + '.jpg'
+    file_path = os.path.join('/home/pi', file_name)
+    with picamera.PiCamera() as camera:
+        camera.vflip = True
+        camera.hflip = True
+        camera.resolution = (1024, 768)
+        camera.capture(file_path)
 
-pb = PushBullet(config["auth_key"])
+    pb = PushBullet(config['auth_key'])
 
-with open(filePath, "rb") as pic:
-    message = "SmartDoor " + re.sub(".png", "", fileName)
-    success, file_data = pb.upload_file(pic, message, "image/jpeg",)
+    with open(file_path, 'rb') as pic:
+        message = 'SmartDoor ' + re.sub('.png', "", file_name)
+        success, file_data = pb.upload_file(pic, message, 'image/jpeg',)
 
-print("Success uploading picture " + file_data.get("file_name") + " at url " + file_data.get("file_url") + " " + str(success))
-devices = pb.devices
+    upload_message = "{0} uploading picture {1} to url {2}".format(
+        'Success' if str(success) else 'Failure',
+        file_data.get('file_name'),
+        file_data.get('file_url'))
+    print(upload_message)
+    devices = pb.devices
 
-for deviceName in config["device_names"]:
-    deviceList = [d for d in devices if d.nickname == deviceName and d.active]
-    device = deviceList[0] if deviceList else None
-    if device is not None:
-        success, push = device.push_file(**file_data)
-        print(push.get("iden") + " succeeded")
+    for deviceName in config['device_names']:
+        device_list = [d for d in devices if d.nickname == deviceName and d.active]
+        device = device_list[0] if device_list else None
+        if device is not None:
+            success, push = device.push_file(**file_data)
+            print('Successfully pushed ' + push.get('iden') + ' to ' + device.nickname)
 
-os.remove(filePath)
+    os.remove(file_path)
 
-
+if __name__ == '__main__':
+    # Being executed as a script
+    take_photo_and_push()
