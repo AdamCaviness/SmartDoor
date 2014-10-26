@@ -1,23 +1,15 @@
 import os
 import re
-import sys
-import json
 import picamera
 import datetime
 from pushbullet import PushBullet
 
 
-def take_photo_and_push():
-    """ Takes a photo and sends to the cloud.
+def take_photo_and_push(pushbullet_auth_key, pushbullet_device_names):
+    """ Takes a photo and sends to the cloud via PushBullet.
         Implements pushbullet.py, see https://pypi.python.org/pypi/pushbullet.py
         Implements picamera.py, see http://raspberrypi.org/picamera-pure-python-interface-for-camera-module
     """
-    executing_path = os.path.dirname(sys.argv[0])
-    config_filename = os.path.join(executing_path, 'config.json')
-        
-    with open(config_filename) as conf:
-        config = json.load(conf)
-
     file_name = datetime.datetime.now().strftime("%I:%M%p %m-%d-%Y") + '.jpg'
     file_path = os.path.join('/home/pi', file_name)
     with picamera.PiCamera() as camera:
@@ -26,7 +18,7 @@ def take_photo_and_push():
         camera.resolution = (1024, 768)
         camera.capture(file_path)
 
-    pb = PushBullet(config['auth_key'])
+    pb = PushBullet(pushbullet_auth_key)
 
     with open(file_path, 'rb') as pic:
         message = 'SmartDoor ' + re.sub('.png', "", file_name)
@@ -39,7 +31,7 @@ def take_photo_and_push():
     print(upload_message)
     devices = pb.devices
 
-    for deviceName in config['device_names']:
+    for deviceName in pushbullet_device_names:
         device_list = [d for d in devices if d.nickname == deviceName and d.active]
         device = device_list[0] if device_list else None
         if device is not None:
