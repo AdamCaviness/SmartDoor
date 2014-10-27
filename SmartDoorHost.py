@@ -18,16 +18,17 @@ def read_sensor():
     GPIO.setup(sensor_pin, GPIO.IN)  # Sensor
 
     try:
+        print("{0} started and waiting for sensor input".format(__file__))
         while True:
-            button_unpressed = GPIO.input(7)
+            button_unpressed = GPIO.input(sensor_pin)
             if not button_unpressed:
-                GPIO.output(16, True)
+                GPIO.output(led_pin, True)
                 SmartDoor.take_photo_and_push(config['pushbullet_auth_key'], config['pushbullet_device_names'])
                 while not button_unpressed:
-                    button_unpressed = GPIO.input(7)
-                GPIO.output(16, False)
+                    button_unpressed = GPIO.input(sensor_pin)
+                GPIO.output(led_pin, False)
     except KeyboardInterrupt:
-        print('SmartDoor exited gracefully')
+        print("{0} exited gracefully".format(__file__))
     finally:
         GPIO.cleanup()
 
@@ -38,6 +39,7 @@ def read_config():
     with open(config_filename) as conf:
         config = json.load(conf)
     return config
+
 
 if __name__ == '__main__':
     # Being executed as a script
