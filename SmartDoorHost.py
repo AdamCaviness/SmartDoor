@@ -1,9 +1,12 @@
 import os
 import sys
 import json
+import time
+import signal
 import SmartDoor
 import RPi.GPIO as GPIO
 
+should_read_sensor = True
 
 def read_sensor():
     """ Reads the specified GPIO pins via the config
@@ -19,7 +22,7 @@ def read_sensor():
 
     try:
         print("{0} started and waiting for sensor input".format(__file__))
-        while True:
+        while should_read_sensor:
             button_unpressed = GPIO.input(sensor_pin)
             if not button_unpressed:
                 GPIO.output(led_pin, True)
@@ -27,10 +30,9 @@ def read_sensor():
                 while not button_unpressed:
                     button_unpressed = GPIO.input(sensor_pin)
                 GPIO.output(led_pin, False)
-    except KeyboardInterrupt:
-        print("{0} exited gracefully".format(__file__))
     finally:
         GPIO.cleanup()
+        sys.exit()
 
 
 def read_config():
@@ -40,6 +42,14 @@ def read_config():
         config = json.load(conf)
     return config
 
+
+def handler(signum=None, frame=None):
+    print("{0} exiting gracefully".format(__file__))
+    global should_read_sensor
+    should_read_sensor = False
+
+for sig in [signal.SIGTERM, signal.SIGINT, signal.SIGHUP, signal.SIGQUIT]:
+    signal.signal(sig, handler)
 
 if __name__ == '__main__':
     # Being executed as a script
