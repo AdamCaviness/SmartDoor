@@ -1,19 +1,18 @@
-import os
 import sys
-import json
-import time
 import signal
 import SmartDoor
+import SmartDoorConfig
 import RPi.GPIO as GPIO
 
 should_read_sensor = True
+
 
 def read_sensor():
     """ Reads the specified GPIO pins via the config
         file and processes them via the SmartDoor script.
     """
 
-    config = read_config()
+    config = SmartDoorConfig.read_config()
     led_pin = int(config['gpio_pin_led'])
     sensor_pin = int(config['gpio_pin_sensor'])
     GPIO.setmode(GPIO.BCM)
@@ -33,14 +32,6 @@ def read_sensor():
     finally:
         GPIO.cleanup()
         sys.exit()
-
-
-def read_config():
-    executing_path = os.path.dirname(sys.argv[0])
-    config_filename = os.path.join(executing_path, 'config.json')
-    with open(config_filename) as conf:
-        config = json.load(conf)
-    return config
 
 
 def handler(signum=None, frame=None):

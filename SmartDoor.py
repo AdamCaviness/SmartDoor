@@ -2,7 +2,7 @@ import os
 import re
 import picamera
 import datetime
-import SmartDoorHost
+import SmartDoorConfig
 from pushbullet import PushBullet
 
 
@@ -47,5 +47,5 @@ def take_photo_and_push(pushbullet_auth_key, pushbullet_device_names):
 
 if __name__ == '__main__':
     # Being executed as a script
-    config = SmartDoorHost.read_config()
+    config = SmartDoorConfig.read_config()
     take_photo_and_push(config['pushbullet_auth_key'], config['pushbullet_device_names'])
