@@ -17,6 +17,10 @@ def read_sensor():
     config = SmartDoorConfig.read_config()
     led_pin = int(config['gpio_pin_led'])
     sensor_pin = int(config['gpio_pin_sensor'])
+    flip_pic_h = str2bool(config['flip_pic_h'])
+    flip_pic_v = str2bool(config['flip_pic_v'])
+    pushbullet_auth_key = config['pushbullet_auth_key']
+    pushbullet_device_names = config['pushbullet_device_names']
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(led_pin, GPIO.OUT)                                # LED
     GPIO.setup(sensor_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Sensor
@@ -27,14 +31,19 @@ def read_sensor():
             button_pressed = GPIO.input(sensor_pin)
             if button_pressed:
                 GPIO.output(led_pin, True)
-                SmartDoor.take_photo_and_push(config['pushbullet_auth_key'], config['pushbullet_device_names'])
+                SmartDoor.take_photo_and_push(flip_pic_h, flip_pic_v, pushbullet_auth_key, pushbullet_device_names)
                 while button_pressed:
                     button_pressed = GPIO.input(sensor_pin)
+                GPIO.output(led_pin, False)
+            else:
                 GPIO.output(led_pin, False)
     finally:
         GPIO.cleanup()
         sys.exit()
 
+
+def str2bool(v):
+  return v.lower() in ("yes", "true", "t", "1")
 
 def handler(signum=None, frame=None):
     print("{0} exiting gracefully".format(__file__))

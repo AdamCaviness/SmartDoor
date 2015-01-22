@@ -3,5 +3,8 @@
     "pushbullet_auth_key": "YOUR_KEY",
     "pushbullet_device_names": ["Chrome", "iPhone"],
     "gpio_pin_sensor": "4",
-    "gpio_pin_led": "23"
+    "gpio_pin_led": "23",
+    "flip_pic_h": "False",
+    "flip_pic_v": "False"
+
 }

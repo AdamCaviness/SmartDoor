@@ -6,7 +6,7 @@ import SmartDoorConfig
 from pushbullet import PushBullet
 
 
-def take_photo_and_push(pushbullet_auth_key, pushbullet_device_names):
+def take_photo_and_push(flip_pic_h, flip_pic_v, pushbullet_auth_key, pushbullet_device_names):
     """ Takes a photo and sends to the cloud via PushBullet.
         Implements pushbullet.py, see https://pypi.python.org/pypi/pushbullet.py
         Implements picamera.py, see http://raspberrypi.org/picamera-pure-python-interface-for-camera-module
@@ -14,8 +14,8 @@ def take_photo_and_push(pushbullet_auth_key, pushbullet_device_names):
     file_name = datetime.datetime.now().strftime("%I:%M%p %m-%d-%Y") + '.jpg'
     file_path = os.path.join('/home/pi', file_name)
     with picamera.PiCamera() as camera:
-        camera.vflip = True
-        camera.hflip = True
+        camera.hflip = flip_pic_h
+        camera.vflip = flip_pic_v
         camera.resolution = (1024, 768)
         camera.capture(file_path)
 
@@ -48,4 +48,4 @@ def take_photo_and_push(pushbullet_auth_key, pushbullet_device_names):
 if __name__ == '__main__':
     # Being executed as a script
     config = SmartDoorConfig.read_config()
-    take_photo_and_push(config['pushbullet_auth_key'], config['pushbullet_device_names'])
+    take_photo_and_push(config['flip_pic_h'], config['flip_pic_v'], config['pushbullet_auth_key'], config['pushbullet_device_names'])
