@@ -1,0 +1,18 @@
+﻿Added VisualStudio Python remote debugger support (ptvsd).
+Added pull down for sensor input.
+GitHub recommended line endings.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   .gitattributes
+#	modified:   KillSmartDoor.py
+#	modified:   MonitorSmartDoor.py
+#	modified:   SmartDoorConfig.py
+#	modified:   SmartDoorHost.py
+#	modified:   StartSmartDoor.py
+#
+
