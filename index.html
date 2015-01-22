@@ -19,7 +19,7 @@
 
         <header>
           <h1>Smartdoor</h1>
-          <h2>A Python script for taking a photo with a Raspberry Pi and sending that image through PushBullet</h2>
+          <h2>A family of Python scripts for taking a photo at your door with a Raspberry Pi and sending that image through PushBullet to your devices</h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -35,6 +35,11 @@
 on your smartphone or web browser via PushBullet.  In today's world sometimes you may not want to go to the door.
 A Raspberry Pi is used to take the photo and your existing doorbell acts as the sensor input.</p>
 
+<h3>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
+
+<p>A config.json file is required and a sample structure is provided in configsample.json. You will need to get a PushBullet API Key from your PushBullet account settings and update your config.json file. You may supply an array of device nicknames to send your pushes to or leave the array blank [] and all your devices will receive the push. Currently the GPIO pins are configured as per BCM (Broadcom) spec instead of the pin number layout of BOARD.</p>
+            
 <h3>
 <a name="contributions" class="anchor" href="#contributions"><span class="octicon octicon-link"></span></a>Contributions</h3>
 
