@@ -1,9 +1,11 @@
 import sys
+import ptvsd
 import signal
 import SmartDoor
 import SmartDoorConfig
 import RPi.GPIO as GPIO
 
+ptvsd.enable_attach(None)
 should_read_sensor = True
 
 
@@ -16,18 +18,18 @@ def read_sensor():
     led_pin = int(config['gpio_pin_led'])
     sensor_pin = int(config['gpio_pin_sensor'])
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(led_pin, GPIO.OUT)    # LED
-    GPIO.setup(sensor_pin, GPIO.IN)  # Sensor
+    GPIO.setup(led_pin, GPIO.OUT)                                # LED
+    GPIO.setup(sensor_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)  # Sensor
 
     try:
         print("{0} started and waiting for sensor input".format(__file__))
         while should_read_sensor:
-            button_unpressed = GPIO.input(sensor_pin)
-            if not button_unpressed:
+            button_pressed = GPIO.input(sensor_pin)
+            if button_pressed:
                 GPIO.output(led_pin, True)
                 SmartDoor.take_photo_and_push(config['pushbullet_auth_key'], config['pushbullet_device_names'])
-                while not button_unpressed:
-                    button_unpressed = GPIO.input(sensor_pin)
+                while button_pressed:
+                    button_pressed = GPIO.input(sensor_pin)
                 GPIO.output(led_pin, False)
     finally:
         GPIO.cleanup()
